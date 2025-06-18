@@ -1,0 +1,60 @@
+.features-section {
+  padding: 5rem 0;
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+}
+
+.feature-card {
+  background-color: rgba(255, 255, 255, 0.7);
+  padding: 2rem 1.5rem;
+  border-radius: 20px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  position: relative;
+  margin: 0.5rem; /* Consistent margin */
+  will-change: transform;
+  z-index: 1; /* Ensure cards stay above others when scaled */
+}
+
+.feature-icon {
+  width: 60px;
+  height: 60px;
+  background-color: rgba(67, 97, 238, 0.1);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+  color: var(--primary);
+  font-size: 1.5rem;
+  transition: transform 0.3s ease;
+}
+
+.feature-card h3 {
+  font-size: 1.3rem;
+  margin-bottom: 1rem;
+  color: var(--dark);
+  transition: color 0.3s ease;
+}
+
+.feature-card:hover h3 {
+  color: var(--primary); /* Optional: Change color on hover */
+}
+
+.feature-card p {
+  color: var(--gray);
+  font-size: 0.95rem;
+  transition: transform 0.3s ease;
+}
+
+.feature-card:hover p {
+  transform: translateY(-2px); /* Optional: Slight lift effect */
+}

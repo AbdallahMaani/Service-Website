@@ -1,0 +1,82 @@
+.testimonials-section {
+  padding: 5rem 0;
+  /* Remove or comment out the background-color so it inherits the global background */
+  /* background-color: var(--light); */
+}
+
+.testimonials-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  padding: 1rem; /* Add padding to prevent edge touching */
+}
+
+.testimonial-card {
+  background-color: white;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  position: relative;
+  cursor: pointer;
+  will-change: transform;
+  z-index: 1;
+}
+
+.quote-icon {
+  color: var(--primary);
+  font-size: 1.3rem;
+  opacity: 0.3;
+  position: absolute;
+  top: 0.8rem;
+  left: 0.8rem;
+}
+
+.testimonial-content {
+  color: var(--dark);
+  font-style: italic;
+  margin-top: 1rem;
+  margin-bottom: 1.5rem;
+  min-height: 8rem;
+  position: relative;
+  z-index: 1;
+  transition: transform 0.3s ease;
+}
+
+.testimonial-card:hover .testimonial-content {
+  transform: translateY(-2px); /* Optional: Slight lift effect */
+}
+
+.testimonial-author {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.author-info h4 {
+  font-size: 1.1rem;
+  color: var(--dark);
+  margin-bottom: 0.3rem;
+  transition: color 0.3s ease;
+}
+
+.testimonial-card:hover .author-info h4 {
+  color: var(--primary); /* Optional: Change color on hover */
+}
+
+.author-info span {
+  color: var(--gray);
+  font-size: 0.9rem;
+}
+
+.rating {
+  display: flex;
+}
+
+.star {
+  color: #ddd;
+  font-size: 1.1rem;
+}
+
+.star.filled {
+  color: #ffc107;
+}
