@@ -1,8 +1,26 @@
 import { forwardRef, useState } from 'react';
 import { motion } from 'framer-motion';
-import { FaPaperPlane, FaUser, FaEnvelope, FaPhone, FaClipboard } from 'react-icons/fa';
-import { toast } from 'react-toastify';
+import { FaPaperPlane, FaUser, FaEnvelope, FaPhone, FaClipboard, FaCheckCircle, FaTimesCircle } from 'react-icons/fa';
+import emailjs from 'emailjs-com';
 import './ServiceForm.css';
+
+// ✅ Initialize EmailJS once
+emailjs.init('DyKYXeJVT9Aw6rVpi');
+
+// Custom Popup Component
+const Popup = ({ type, message, onClose }) => (
+  <div className={`custom-popup ${type}`}>
+    <div className="popup-content">
+      {type === 'success' ? (
+        <FaCheckCircle className="popup-icon success" />
+      ) : (
+        <FaTimesCircle className="popup-icon error" />
+      )}
+      <span>{message}</span>
+      <button className="popup-close" onClick={onClose}>×</button>
+    </div>
+  </div>
+);
 
 const ServiceForm = forwardRef((props, ref) => {
   const [formData, setFormData] = useState({
@@ -14,23 +32,21 @@ const ServiceForm = forwardRef((props, ref) => {
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [popup, setPopup] = useState({ show: false, type: '', message: '' });
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
   const formatPhoneNumber = (value) => {
-    // Allow leading +
     let plus = '';
     if (value.startsWith('+')) {
       plus = '+';
       value = value.slice(1);
     }
-    // Remove all non-digit characters
-    let digits = value.replace(/\D/g, '').slice(0, 12); // max 12 digits
-    // Group digits: 3-3-3-3 (for up to 12 digits)
+    let digits = value.replace(/\D/g, '').slice(0, 12);
     const groups = [];
     for (let i = 0; i < digits.length; i += 3) {
       if (i === 9) {
-        groups.push(digits.slice(i, i + 3)); // last group (could be less than 3)
+        groups.push(digits.slice(i, i + 3));
         break;
       }
       groups.push(digits.slice(i, i + 3));
@@ -40,68 +56,64 @@ const ServiceForm = forwardRef((props, ref) => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    if (name === 'phone') {
-      setFormData(prev => ({
-        ...prev,
-        [name]: formatPhoneNumber(value)
-      }));
-    } else {
-      setFormData(prev => ({
-        ...prev,
-        [name]: value
-      }));
-    }
+    setFormData(prev => ({
+      ...prev,
+      [name]: name === 'phone' ? formatPhoneNumber(value) : value
+    }));
+  };
+
+  const showPopup = (type, message) => {
+    setPopup({ show: true, type, message });
+    setTimeout(() => setPopup({ show: false, type: '', message: '' }), 3500);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // Email validation
     if (!emailRegex.test(formData.email)) {
-      toast.error('Please enter a valid email address.');
+      showPopup('error', 'Please enter a valid email address.');
       setIsSubmitting(false);
       return;
     }
 
-    // Phone validation: 10-12 digits, optional leading +
-    let phoneValue = formData.phone;
-    if (phoneValue.startsWith('+')) phoneValue = phoneValue.slice(1);
+    let phoneValue = formData.phone.startsWith('+') ? formData.phone.slice(1) : formData.phone;
     const phoneDigits = phoneValue.replace(/\D/g, '');
     if (phoneDigits.length < 10 || phoneDigits.length > 12) {
-      toast.error('Please enter a valid phone number (10 to 12 digits).');
+      showPopup('error', 'Please enter a valid phone number (10 to 12 digits).');
       setIsSubmitting(false);
       return;
     }
 
-    // Here you would typically send the form data to your backend
-    // which would then send the email. For this example, we'll simulate it.
-    
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      // In a real app, you would do something like:
-      // const response = await fetch('/api/send-email', {
-      //   method: 'POST',
-      //   headers: {
-      //     'Content-Type': 'application/json',
-      //   },
-      //   body: JSON.stringify(formData),
-      // });
-      
-      // if (!response.ok) throw new Error('Failed to send message');
-      
-      toast.success('Request submitted successfully! We will contact you soon.');
-      setFormData({
-        name: '',
-        email: '',
-        phone: '',
-        service: '',
-        details: '',
-      });
+      const response = await emailjs.send(
+        'service_kcmxnf9',
+        'template_zlgs4ej',
+        {
+          name: formData.name,
+          email: formData.email,
+          phone: formData.phone,
+          service: formData.service,
+          details: formData.details,
+          time: new Date().toLocaleString(), // ✅ Added time field
+        }
+      );
+
+      if (response.status === 200) {
+        showPopup('success', 'Request submitted successfully! We will contact you soon.');
+        setFormData({
+          name: '',
+          email: '',
+          phone: '',
+          service: '',
+          details: '',
+        });
+      } else {
+        throw new Error('Failed to send email');
+      }
     } catch (error) {
-      toast.error('Failed to submit request. Please try again.');
+      console.error('Email sending error:', error);
+      showPopup('error', 'Failed to submit request. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
@@ -171,7 +183,8 @@ const ServiceForm = forwardRef((props, ref) => {
                 name="phone"
                 value={formData.phone}
                 onChange={handleChange}
-                placeholder="(123) 456-7890"
+                required
+                placeholder="+1 234 567 8901"
               />
             </div>
             
@@ -218,7 +231,7 @@ const ServiceForm = forwardRef((props, ref) => {
             >
               {isSubmitting ? 'Sending...' : (
                 <>
-                  <FaPaperPlane className="btn-icon" style={{marginRight:'.8rem'}} />
+                  <FaPaperPlane className="btn-icon" style={{ marginRight: '.8rem' }} />
                   Submit Request
                 </>
               )}
@@ -228,25 +241,21 @@ const ServiceForm = forwardRef((props, ref) => {
           <div className="form-info">
             <h3>How It Works</h3>
             <ul>
-              <li>
-                <span>1</span>
-                <p>Fill out the form with your service details</p>
-              </li>
-              <li>
-                <span>2</span>
-                <p>We'll review your request and contact you</p>
-              </li>
-              <li>
-                <span>3</span>
-                <p>Receive a quote and schedule your service</p>
-              </li>
-              <li>
-                <span>4</span>
-                <p>Enjoy professional service delivered to you</p>
-              </li>
+              <li><span>1</span><p>Fill out the form with your service details</p></li>
+              <li><span>2</span><p>We'll review your request and contact you</p></li>
+              <li><span>3</span><p>Receive a quote and schedule your service</p></li>
+              <li><span>4</span><p>Enjoy professional service delivered to you</p></li>
             </ul>
           </div>
         </motion.div>
+
+        {popup.show && (
+          <Popup
+            type={popup.type}
+            message={popup.message}
+            onClose={() => setPopup({ show: false, type: '', message: '' })}
+          />
+        )}
       </div>
     </section>
   );

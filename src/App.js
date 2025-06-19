@@ -52,8 +52,8 @@ function App() {
       />
       <main>
         <Hero onGetStarted={handleGetStarted} />
-        <ServiceForm ref={serviceFormRef} />
         <Features />
+        <ServiceForm ref={serviceFormRef} />
         <Testimonials />
       </main>
       <Footer ref={footerRef} />
@@ -66,6 +66,7 @@ function App() {
           <FaArrowUp />
         </button>
       )}
+      <h2 class="Ai-title">Maani AI</h2>
       <ChatbaseChatbot />
     </div>
   );
