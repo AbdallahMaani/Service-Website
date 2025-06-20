@@ -48,7 +48,7 @@ function App() {
       <Header
         isMenuOpen={isMenuOpen}
         toggleMenu={toggleMenu}
-        onContactClick={handleContactScroll}
+        onGetStarted={handleGetStarted}
       />
       <main>
         <Hero onGetStarted={handleGetStarted} />

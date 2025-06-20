@@ -236,10 +236,12 @@ const ServiceForm = forwardRef((props, ref) => {
                 </>
               )}
             </motion.button>
+
+            
           </form>
           
           <div className="form-info">
-            <h3>How It Works</h3>
+            <h3>Contact</h3>
             <ul>
               <li><span>1</span><p>Fill out the form with your service details</p></li>
               <li><span>2</span><p>We'll review your request and contact you</p></li>
@@ -248,6 +250,18 @@ const ServiceForm = forwardRef((props, ref) => {
             </ul>
           </div>
         </motion.div>
+        
+        <motion.div
+              className="form-privacy"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3, duration: 0.7, ease: "easeOut" }}
+              style={{maxWidth: '900px', margin: '2rem auto 0 auto', textAlign: 'center'}}
+            >
+              <small>
+                By submitting this form, you agree to our <a href="/privacy-policy" target="_blank" rel="noopener noreferrer">Privacy Policy</a> and consent to receive communications from Maani Services. regarding updates, offers, and other promotional content. You can undo at any time by send an email to email in.
+              </small>
+            </motion.div>
 
         {popup.show && (
           <Popup

@@ -199,3 +199,33 @@
 
 .custom-popup.success { border: 2px solid #2ecc40; }
 .custom-popup.error { border: 2px solid #e74c3c; }
+
+.form-privacy {
+  margin-top: 1.2rem;
+  text-align: left;
+  opacity: 0.85;
+  animation: fadeInPrivacy 1.2s 0.3s both;
+}
+
+.form-privacy small {
+  font-size: 0.85rem;
+  color: #777777;
+  line-height: 1.6;
+  display: block;
+  letter-spacing: 0.01em;
+}
+
+.form-privacy a {
+  color: var(--primary);
+  text-decoration: underline;
+  transition: color 0.2s;
+}
+
+.form-privacy a:hover {
+  color: #bba01c;
+}
+
+@keyframes fadeInPrivacy {
+  from { opacity: 0; transform: translateY(10px);}
+  to   { opacity: 0.85; transform: translateY(0);}
+}

@@ -7,84 +7,32 @@ import {
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import './Header.css';
 
-const Header = ({ isMenuOpen, toggleMenu, onContactClick }) => {
+const Header = ({ isMenuOpen, toggleMenu, onGetStarted }) => {
   const [scrolled, setScrolled] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState(null);
   const location = useLocation();
   const navigate = useNavigate();
 
   useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 50);
-    };
+    const handleScroll = () => setScrolled(window.scrollY > 50);
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   // Dropdown items for Services and Solutions with icons, names, and descriptions
   const servicesDropdown = [
-    {
-      name: 'Consultation',
-      icon: <FaLightbulb />,
-      description: 'Expert advice for your needs',
-      path: '/services/consultation'
-    },
-    {
-      name: 'Repair',
-      icon: <FaTools />,
-      description: 'Fixing and restoring equipment',
-      path: '/services/repair'
-    },
-    {
-      name: 'Installation',
-      icon: <FaWrench />,
-      description: 'Professional setup and install',
-      path: '/services/installation'
-    },
-    {
-      name: 'Maintenance',
-      icon: <FaCogs />,
-      description: 'Regular checkups and servicing',
-      path: '/services/maintenance'
-    },
-    {
-      name: 'Custom Request',
-      icon: <FaClipboardList />,
-      description: 'Tailored solutions for you',
-      path: '/services/custom'
-    },
+    { name: 'Consultation', icon: <FaLightbulb />, description: 'Expert advice for your needs', path: '/services/consultation' },
+    { name: 'Repair', icon: <FaTools />, description: 'Fixing and restoring equipment', path: '/services/repair' },
+    { name: 'Installation', icon: <FaWrench />, description: 'Professional setup and install', path: '/services/installation' },
+    { name: 'Maintenance', icon: <FaCogs />, description: 'Regular checkups and servicing', path: '/services/maintenance' },
+    { name: 'Custom Request', icon: <FaClipboardList />, description: 'Tailored solutions for you', path: '/services/custom' },
   ];
   const solutionsDropdown = [
-    {
-      name: 'Integration',
-      icon: <FaPuzzlePiece />,
-      description: 'Seamless system integration',
-      path: '/solutions/integration'
-    },
-    {
-      name: 'Automation',
-      icon: <FaBolt />,
-      description: 'Automate your workflows',
-      path: '/solutions/automation'
-    },
-    {
-      name: 'Analytics',
-      icon: <FaChartLine />,
-      description: 'Data-driven insights',
-      path: '/solutions/analytics'
-    },
-    {
-      name: 'Security',
-      icon: <FaShieldAlt />,
-      description: 'Protect your assets',
-      path: '/solutions/security'
-    },
-    {
-      name: 'Team Training',
-      icon: <FaUsers />,
-      description: 'Upskill your workforce',
-      path: '/solutions/training'
-    },
+    { name: 'Integration', icon: <FaPuzzlePiece />, description: 'Seamless system integration', path: '/solutions/integration' },
+    { name: 'Automation', icon: <FaBolt />, description: 'Automate your workflows', path: '/solutions/automation' },
+    { name: 'Analytics', icon: <FaChartLine />, description: 'Data-driven insights', path: '/solutions/analytics' },
+    { name: 'Security', icon: <FaShieldAlt />, description: 'Protect your assets', path: '/solutions/security' },
+    { name: 'Team Training', icon: <FaUsers />, description: 'Upskill your workforce', path: '/solutions/training' },
   ];
 
   const navItems = [
@@ -105,17 +53,17 @@ const Header = ({ isMenuOpen, toggleMenu, onContactClick }) => {
     if (isMenuOpen) toggleMenu();
   };
 
+  // Dropdown open/close logic for mobile and desktop
+  const handleDropdown = (itemName, hasDropdown, e) => {
+    if (window.innerWidth <= 900 && hasDropdown) {
+      e.preventDefault();
+      setActiveDropdown(activeDropdown === itemName ? null : itemName);
+    }
+  };
+
   const handleNavClick = () => {
     setActiveDropdown(null);
     if (isMenuOpen) toggleMenu();
-  };
-
-  const handleDropdownHover = (itemName) => {
-    setActiveDropdown(itemName);
-  };
-
-  const handleDropdownLeave = () => {
-    setActiveDropdown(null);
   };
 
   return (
@@ -144,18 +92,16 @@ const Header = ({ isMenuOpen, toggleMenu, onContactClick }) => {
                 <li
                   key={index}
                   className={item.dropdown ? 'has-dropdown' : ''}
-                  onMouseEnter={() => item.dropdown && handleDropdownHover(item.name)}
-                  onMouseLeave={handleDropdownLeave}
+                  onMouseEnter={() => window.innerWidth > 900 && item.dropdown && setActiveDropdown(item.name)}
+                  onMouseLeave={() => window.innerWidth > 900 && item.dropdown && setActiveDropdown(null)}
                 >
                   <Link
                     to={item.path}
-                    onClick={handleNavClick}
+                    onClick={e => handleDropdown(item.name, !!item.dropdown, e)}
                     className={activeDropdown === item.name ? 'active-nav-item' : ''}
                   >
                     {item.name}
-                    {item.dropdown && (
-                      <span className="dropdown-arrow">▾</span>
-                    )}
+                    {item.dropdown && <span className="dropdown-arrow">▾</span>}
                   </Link>
                   {item.dropdown && activeDropdown === item.name && (
                     <motion.ul 
@@ -184,18 +130,18 @@ const Header = ({ isMenuOpen, toggleMenu, onContactClick }) => {
                 </li>
               ))}
             </ul>
-            <motion.button
+            
+          </motion.nav>
+              <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               className="btn contact-btn"
-              onClick={onContactClick}
+              onClick={onGetStarted}
               style={{ fontWeight: '850' }}
             >
               Contact Us
             </motion.button>
-          </motion.nav>
-
-          <button className="menu-toggle" onClick={toggleMenu}>
+          <button className="menu-toggle" onClick={toggleMenu} aria-label="Toggle menu">
             {isMenuOpen ? <FaTimes /> : <FaBars />}
           </button>
         </div>
