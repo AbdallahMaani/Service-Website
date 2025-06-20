@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { FaLightbulb, FaClock, FaHandshake, FaHeadset } from 'react-icons/fa';
 import './Featuers.css';
+import { forwardRef } from 'react';
 
 const features = [
   {
@@ -25,9 +26,9 @@ const features = [
   }
 ];
 
-const Features = () => {
+const Features = forwardRef((props, ref) => {
   return (
-    <section className="features-section">
+    <section className="features-section" ref={ref}>
       <div className="container">
         <motion.h2 
           className="section-title"
@@ -72,6 +73,6 @@ const Features = () => {
       </div>
     </section>
   );
-};
+});
 
 export default Features;

@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import './Hero.css';
 
-const Hero = ({ onGetStarted }) => {
+const Hero = ({ onContact }) => {
   return (
     <section className="hero">
       <div className="container">
@@ -23,7 +23,7 @@ const Hero = ({ onGetStarted }) => {
               className="btn hero-btn"
               whileHover={{ scale: 1.07 }}
               whileTap={{ scale: 0.95 }}
-              onClick={onGetStarted}
+              onClick={onContact}
               style={{fontWeight:'900' , fontSize:'1.2rem'}}
 
             >
